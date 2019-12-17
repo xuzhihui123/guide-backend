@@ -28,3 +28,7 @@ p{word-wrap:break-word}
     *zoom: 1;  /*zoom 1 就是ie6 清除浮动方式  *  ie7一下的版本所识别*/
 }
 
+html{
+    height: 100%;
+}
+

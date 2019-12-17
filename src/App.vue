@@ -1,19 +1,18 @@
 <template>
   <div id="app">
-    <h3>我是app{{a}}</h3>
+      <router-view/>
   </div>
 </template>
 <script>
-  export default {
-    data(){
-      return{
-          a:'111'
-      }
-    },
-    methods:{
 
-    }
-  }
+  export default {
+    data() {
+      return {};
+    },
+    methods: {}
+
+
+  };
 </script>
 <style>
 
