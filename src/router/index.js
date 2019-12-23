@@ -3,10 +3,11 @@ import VueRouter from "vue-router";
 
 Vue.use(VueRouter);
 
-const Login = ()=>import('views/login/Login')
+const Login = () => import("views/login/Login");
 const Home = () => import("views/home/Home");
 const SuperUsers = () => import("views/superusers/SuperUsers");
 const Users = () => import("views/users/Users");
+const AllData = () => import("views/alldata/AllData");
 
 const routes = [
   {
@@ -14,21 +15,22 @@ const routes = [
     component: Home,
     children: [
       { path: "superusers", component: SuperUsers },
-      { path: "users", component: Users }
+      { path: "users", component: Users },
+      { path: "alldata", component: AllData }
     ],
-    meta:{
-      name:'guide后台管理'
+    meta: {
+      name: "guide后台管理"
     },
-    redirect: '/home/superusers'
+    redirect: "/home/superusers"
   },
   {
-    path:'/login',
-    component:Login,
-    meta:{
-      name:'登录'
+    path: "/login",
+    component: Login,
+    meta: {
+      name: "登录"
     }
   },
-  { path: "/", redirect: "/home" },
+  { path: "/", redirect: "/home" }
 ];
 
 const router = new VueRouter({
@@ -38,13 +40,13 @@ const router = new VueRouter({
 });
 
 //全局导航守卫 判断路由进入之前做的事情
-router.beforeEach((to,from,next)=>{
+router.beforeEach((to, from, next) => {
   //设置title 标题
-  document.title = to.matched[0].meta.name
-  if(to.path === '/login') return next()
-  let str = window.sessionStorage.getItem('token')
-  if(!str) return next('/login')
-  next()
-})
+  document.title = to.matched[0].meta.name;
+  if (to.path === "/login") return next();
+  let str = window.sessionStorage.getItem("token");
+  if (!str) return next("/login");
+  next();
+});
 
 export default router;

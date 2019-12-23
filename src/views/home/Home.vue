@@ -110,6 +110,13 @@
               index: "/home/orders"
             }],
             index: "5"
+          },
+          {
+            title:"数据统计",
+            childeren:[
+              {title:"数据统计图", index:'/home/alldata'}
+            ],
+            index:"6"
           }
         ],
         asideNavListIcon: {
@@ -117,7 +124,8 @@
           "2": "el-icon-user-solid",
           "3": "el-icon-s-help",
           "4": "el-icon-s-comment",
-          "5": "el-icon-s-order"
+          "5": "el-icon-s-order",
+          "6":"el-icon-s-platform"
         },
         iscollapse: false,
         loginUserName: ""
