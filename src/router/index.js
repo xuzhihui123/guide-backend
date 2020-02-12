@@ -8,6 +8,7 @@ const Home = () => import("views/home/Home");
 const SuperUsers = () => import("views/superusers/SuperUsers");
 const Users = () => import("views/users/Users");
 const AllData = () => import("views/alldata/AllData");
+const AllGuide = ()=>import("views/allguide/AllGuide")
 
 const routes = [
   {
@@ -16,7 +17,8 @@ const routes = [
     children: [
       { path: "superusers", component: SuperUsers },
       { path: "users", component: Users },
-      { path: "alldata", component: AllData }
+      { path: "alldata", component: AllData },
+      {path:'guides',component:AllGuide}
     ],
     meta: {
       name: "guide后台管理"

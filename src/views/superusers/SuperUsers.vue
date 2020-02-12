@@ -43,6 +43,7 @@
                 width="180">
         </el-table-column>
         <el-table-column
+                sortable
                 prop="create_time"
                 label="创建时间">
           <template slot-scope="scope">
