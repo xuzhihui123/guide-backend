@@ -1,9 +1,11 @@
 <template>
   <el-container>
     <el-header>
-      <div style="color: #fff;">123</div>
+      <div style="color: #fff;" class="left_logo">
+          寻导-后台管理
+      </div>
       <div class="top_user">
-        <img src="~assets/logo.png" alt="">
+        <img src="~assets/main-logo.png" alt="">
         <el-dropdown @command="signOut" style="cursor: pointer">
         <span class="el-dropdown-link" style="color: #fff;">
           您好：{{loginUserName}}<i class="el-icon-arrow-down el-icon--right"></i>
@@ -62,6 +64,8 @@
     name: "Home",
     created() {
     },
+    computed:{
+    },
     data() {
       return {
         asideNavList: [
@@ -89,34 +93,28 @@
             }],
             index: "3"
           },
-          {
-            title: "留言管理",
-            childeren: [{
-              title: "留言信息列表",
-              index: "/home/messages"
-            }],
-            index: "4"
-          },
+          // {
+          //   title: "留言管理",
+          //   childeren: [{
+          //     title: "留言信息列表",
+          //     index: "/home/messages"
+          //   }],
+          //   index: "4"
+          // },
           {
             title: "订单管理",
             childeren: [{
-              title: "已处理订单",
-              index: "/home/dealorders"
-            }, {
-              title: "未处理订单",
-              index: "/home/unorders"
-            }, {
               title: "全部订单",
-              index: "/home/orders"
+              index: "/home/allorders"
             }],
-            index: "5"
+            index: "4"
           },
           {
             title: "数据统计",
             childeren: [
               { title: "数据统计图", index: "/home/alldata" }
             ],
-            index: "6"
+            index: "5"
           }
         ],
         asideNavListIcon: {
@@ -171,7 +169,7 @@
   }
 
   .el-aside {
-    height: 100vh;
+    min-height: 100vh;
   }
 
   .el-menu {
@@ -186,7 +184,6 @@
   .el-main {
     background-color: #E9EDF1;
   }
-
   .my-collapse {
     height: 40px;
     width: 100%;
@@ -206,6 +203,12 @@
     border-radius: 50%;
     overflow: hidden;
     margin-right: 20px;
+  }
+
+  .left_logo{
+    font-size: 24px;
+    font-weight: 700;
+    color: #E9EDF1;
   }
 
 </style>
