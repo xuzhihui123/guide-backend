@@ -1,7 +1,7 @@
 <template>
   <div class="login" style="min-width: 1200px">
     <div class="login-title">
-      寻导后台管理系统
+      guide后台管理系统
     </div>
     <div class="login-inner">
       <el-form :model="loginForm" status-icon ref="ruleForm" label-width="0px" class="demo-ruleForm"
