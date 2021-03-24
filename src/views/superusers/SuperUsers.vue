@@ -91,7 +91,6 @@
       </el-pagination>
     </el-card>
 
-
     <!--    编辑弹窗-->
     <el-dialog
             title="编辑管理员"
@@ -126,7 +125,6 @@
           <el-button type="primary" @click="submitEditUser">确 定</el-button>
       </span>
     </el-dialog>
-
 
     <!--    添加弹窗-->
     <el-dialog
@@ -166,297 +164,288 @@
 </template>
 
 <script>
-  import {
-    getAllSuperUsers,
-    getRuleSuperUsers,
-    deleteAdminUsersById,
-    addAdminUser,
-    searchAdminUser,
-    editAdminUser
-  } from "network/super_users";
+import {
+  getAllSuperUsers,
+  getRuleSuperUsers,
+  deleteAdminUsersById,
+  addAdminUser,
+  searchAdminUser,
+  editAdminUser
+} from 'network/super_users'
 
-  export default {
-    name: "SuperUsers",
-    data() {
-      //添加用户  输入框校验
-      let validateUser = (rule, value, callback) => {
-        if (!/^[a-zA-Z0-9_-]{6,16}$/.test(value)) {
-          callback(new Error("用户名必须是字母，数字，下划线组成！"));
-        } else {
-          callback();
-        }
-      };
-      //添加密码  输入框校验
-      let validatePassWord = (rule, value, callback) => {
-        if (!/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,20}$/.test(value)) {
-          callback(new Error("密码需要包括数字和英文！"));
-        } else {
-          callback();
-        }
-      };
-      //添加再次输入密码  输入框校验
-      let validatePassWordAgain = (rule, value, callback) => {
-        if (value !== this.addAdminUserData.passWord) {
-          callback(new Error("两次输入密码不一样"));
-        } else {
-          callback();
-        }
-      };
-      return {
-        tableData: [],
-        tableDataLength: 0,
-        AdminUsersParams: {
-          pageNum: 1,
-          pageSize: 10
-        },
-        searchAdminUser: "",
-        editDialogVisible: false,
-        editAdminUserData: {},
-        addUserDialogVisible: false,
-        addAdminUserData: {
-          userName: "",
-          passWord: "",
-          passWordAgain: "",
-          power: "管理员"
-        },
-        addAdminUserDataRules: {
-          userName: [
-            { required: true, trigger: "change", message: "请输入用户名" },
-            { min: 6, max: 16, message: "用户名不得低于6位且不超过16位", trigger: "change" },
-            { validator: validateUser, trigger: "change" }
-          ],
-          passWord: [
-            { required: true, trigger: "change", message: "请输入密码" },
-            { min: 6, max: 20, message: "密码不得低于6位且不超过20位", trigger: "change" },
-            { validator: validatePassWord, trigger: "change" }
-          ],
-          passWordAgain: [
-            { required: true, trigger: "change", message: "请输入确认密码" },
-            { validator: validatePassWordAgain, trigger: "change" }
-          ]
-        },
-        loginUserName: "",
-        loginUserPower: null
-      };
+export default {
+  name: 'SuperUsers',
+  data () {
+    // 添加用户  输入框校验
+    const validateUser = (rule, value, callback) => {
+      if (!/^[a-zA-Z0-9_-]{6,16}$/.test(value)) {
+        callback(new Error('用户名必须是字母，数字，下划线组成！'))
+      } else {
+        callback()
+      }
+    }
+    // 添加密码  输入框校验
+    const validatePassWord = (rule, value, callback) => {
+      if (!/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,20}$/.test(value)) {
+        callback(new Error('密码需要包括数字和英文！'))
+      } else {
+        callback()
+      }
+    }
+    // 添加再次输入密码  输入框校验
+    const validatePassWordAgain = (rule, value, callback) => {
+      if (value !== this.addAdminUserData.passWord) {
+        callback(new Error('两次输入密码不一样'))
+      } else {
+        callback()
+      }
+    }
+    return {
+      tableData: [],
+      tableDataLength: 0,
+      AdminUsersParams: {
+        pageNum: 1,
+        pageSize: 10
+      },
+      searchAdminUser: '',
+      editDialogVisible: false,
+      editAdminUserData: {},
+      addUserDialogVisible: false,
+      addAdminUserData: {
+        userName: '',
+        passWord: '',
+        passWordAgain: '',
+        power: '管理员'
+      },
+      addAdminUserDataRules: {
+        userName: [
+          { required: true, trigger: 'change', message: '请输入用户名' },
+          { min: 6, max: 16, message: '用户名不得低于6位且不超过16位', trigger: 'change' },
+          { validator: validateUser, trigger: 'change' }
+        ],
+        passWord: [
+          { required: true, trigger: 'change', message: '请输入密码' },
+          { min: 6, max: 20, message: '密码不得低于6位且不超过20位', trigger: 'change' },
+          { validator: validatePassWord, trigger: 'change' }
+        ],
+        passWordAgain: [
+          { required: true, trigger: 'change', message: '请输入确认密码' },
+          { validator: validatePassWordAgain, trigger: 'change' }
+        ]
+      },
+      loginUserName: '',
+      loginUserPower: null
+    }
+  },
+  computed: {
+    addUserFormRef () {
+      return this.$refs.addUserForm
     },
-    computed: {
-      addUserFormRef() {
-        return this.$refs.addUserForm;
-      },
-      editUserFormRef() {
-        return this.$refs.editUserForm;
-      },
+    editUserFormRef () {
+      return this.$refs.editUserForm
+    }
+  },
+  methods: {
+    // 初始化管理员信息
+    getSuperUsersData () {
+      getAllSuperUsers().then(d => {
+        this.tableDataLength = d.data.length
+      })
+      getRuleSuperUsers(this.AdminUsersParams.pageNum, this.AdminUsersParams.pageSize)
+        .then(d => {
+          this.tableData = d.data
+        })
     },
-    methods: {
-      //初始化管理员信息
-      getSuperUsersData() {
-        getAllSuperUsers().then(d => {
-          this.tableDataLength = d.data.length;
-        });
-        getRuleSuperUsers(this.AdminUsersParams.pageNum, this.AdminUsersParams.pageSize)
-          .then(d => {
-            this.tableData = d.data;
-          });
-      },
 
-
-      //删除单个管理员
-      deleteUser(d) {
-        this.$confirm("您确定要删除该管理员吗?", "提示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(() => {
-          deleteAdminUsersById(d).then(d => {
-            if (d.code === "200") {
-              this.$message({
-                message: "嘻嘻！删除成功！",
-                center: true,
-                type: "success"
-              });
-              this.getSuperUsersData();
-            } else {
-              this.$message({
-                message: "服务器错误！删除失败了！",
-                center: true,
-                type: "error"
-              });
-            }
-          });
-        }).catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除"
-          });
-        });
-
-      },
-
-
-      //编辑单个管理员
-      editUser(d) {
-        console.log(d);
-        this.editDialogVisible = true;
-        this.editAdminUserData = d;
-        this.editAdminUserData.power = this.editAdminUserData.power >= 5 ? "超级管理员" : "管理员";
-      },
-      //确认编辑
-      submitEditUser() {
-        this.editUserFormRef.validate(r => {
-          if (r) {
-            let { userName: uN, passWord: pD, status: sta, id: uid } = this.editAdminUserData;
-            let data = {};
-            data.userName = uN;
-            data.passWord = pD;
-            data.status = sta;
-            data.id = uid;
-            data.power = this.editAdminUserData.power === "管理员" ? 4 : 5;
-
-            editAdminUser(data).then(d => {
-              if (d.code === "200") {
-                this.$message({
-                  type: "success",
-                  message: "修改成功",
-                  duration: 2000
-                });
-              }
-              this.editDialogVisible = false;
-              this.getSuperUsersData();
-            });
+    // 删除单个管理员
+    deleteUser (d) {
+      this.$confirm('您确定要删除该管理员吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteAdminUsersById(d).then(d => {
+          if (d.code === '200') {
+            this.$message({
+              message: '嘻嘻！删除成功！',
+              center: true,
+              type: 'success'
+            })
+            this.getSuperUsersData()
           } else {
             this.$message({
-              type: "error",
-              message: "请检查表单是否填写准确完整！",
-              duration: 2000
-            });
-
+              message: '服务器错误！删除失败了！',
+              center: true,
+              type: 'error'
+            })
           }
-        });
-      },
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
 
+    // 编辑单个管理员
+    editUser (d) {
+      console.log(d)
+      this.editDialogVisible = true
+      this.editAdminUserData = d
+      this.editAdminUserData.power = this.editAdminUserData.power >= 5 ? '超级管理员' : '管理员'
+    },
+    // 确认编辑
+    submitEditUser () {
+      this.editUserFormRef.validate(r => {
+        if (r) {
+          const { userName: uN, passWord: pD, status: sta, id: uid } = this.editAdminUserData
+          const data = {}
+          data.userName = uN
+          data.passWord = pD
+          data.status = sta
+          data.id = uid
+          data.power = this.editAdminUserData.power === '管理员' ? 4 : 5
 
-      // 添加单个管理员
-      addAdminUser() {
-        this.addUserDialogVisible = true;
-      },
-
-      //确认添加管理员
-      submitAddUser() {
-        this.addUserFormRef.validate(r => {
-          //校验成功  传数据
-          if (r) {
-            let { userName: uN, passWord: pD } = this.addAdminUserData;
-            let data = {};
-            data.userName = uN;
-            data.passWord = pD;
-            if (this.addAdminUserData.power === "管理员") {
-              data.power = 4;
-            } else {
-              data.power = 5;
+          editAdminUser(data).then(d => {
+            if (d.code === '200') {
+              this.$message({
+                type: 'success',
+                message: '修改成功',
+                duration: 2000
+              })
             }
-            addAdminUser(data).then(d => {
-              if (d.code === "200") {
-                this.addUserDialogVisible = false;
-                this.$message({
-                  type: "success",
-                  message: "添加管理员成功！",
-                  duration: 2000
-                });
-                //重新请求赋值
-                this.getSuperUsersData();
-              } else if (d.code === "500") {
-                this.$message({
-                  type: "error",
-                  message: "用户名已经存在！",
-                  duration: 2000
-                });
-              }
-            });
-          } else {
-            this.$message({
-              type: "error",
-              message: "请检查表单是否填写准确完整！",
-              duration: 2000
-            });
-          }
-        });
-      },
-
-      // 关闭添加的dialog  重置表单数据
-      closeAddUserDialog() {
-        this.addAdminUserData = {
-          userName: "",
-          passWord: "",
-          passWordAgain: "",
-          power: "管理员"
-        };
-      },
-
-      // 关闭前的回调
-      handleClose(done) {
-        this.$confirm("确认关闭？")
-          .then(_ => {
-            done();
+            this.editDialogVisible = false
+            this.getSuperUsersData()
           })
-          .catch(_ => {
-          });
-      },
+        } else {
+          this.$message({
+            type: 'error',
+            message: '请检查表单是否填写准确完整！',
+            duration: 2000
+          })
+        }
+      })
+    },
 
+    // 添加单个管理员
+    addAdminUser () {
+      this.addUserDialogVisible = true
+    },
 
-      //搜索单个管理员用户
-      searchAdminUsers() {
-        searchAdminUser(this.searchAdminUser).then(d => {
-          if (d.status.code === "200") {
-            this.tableData = [];
-            this.tableData.push(d.admin);
+    // 确认添加管理员
+    submitAddUser () {
+      this.addUserFormRef.validate(r => {
+        // 校验成功  传数据
+        if (r) {
+          const { userName: uN, passWord: pD } = this.addAdminUserData
+          const data = {}
+          data.userName = uN
+          data.passWord = pD
+          if (this.addAdminUserData.power === '管理员') {
+            data.power = 4
           } else {
-            this.$message.error("查询失败！用户名不存在");
+            data.power = 5
           }
-        });
-      },
-
-
-      // 搜索输入框没值的时候显示所有
-      searchAdminUserInput() {
-        if (this.searchAdminUser === "") {
-          this.getSuperUsersData();
+          addAdminUser(data).then(d => {
+            if (d.code === '200') {
+              this.addUserDialogVisible = false
+              this.$message({
+                type: 'success',
+                message: '添加管理员成功！',
+                duration: 2000
+              })
+              // 重新请求赋值
+              this.getSuperUsersData()
+            } else if (d.code === '500') {
+              this.$message({
+                type: 'error',
+                message: '用户名已经存在！',
+                duration: 2000
+              })
+            }
+          })
+        } else {
+          this.$message({
+            type: 'error',
+            message: '请检查表单是否填写准确完整！',
+            duration: 2000
+          })
         }
-      },
+      })
+    },
 
-
-      //更改当前页
-      handleCurrentChange(val) {
-        this.AdminUsersParams.pageNum = val;
-        this.getSuperUsersData();
-      },
-      //更改每页条数
-      handleSizeChange(val) {
-        this.AdminUsersParams.pageSize = val;
-        this.getSuperUsersData();
-      },
-
-      inputDis(d) {
-        let a  = this.loginUserName === d ? false : true
-        let b = this.loginUserPower >=5 ? false : true
-        if(a===false || b===false){
-          return false
-        }
-        if(a===true || b===false){
-          return true
-        }
+    // 关闭添加的dialog  重置表单数据
+    closeAddUserDialog () {
+      this.addAdminUserData = {
+        userName: '',
+        passWord: '',
+        passWordAgain: '',
+        power: '管理员'
       }
     },
 
+    // 关闭前的回调
+    handleClose (done) {
+      this.$confirm('确认关闭？')
+        .then(_ => {
+          done()
+        })
+        .catch(_ => {
+        })
+    },
 
-    created() {
-      this.getSuperUsersData();
-      //获取sessionstorage的username
-      this.loginUserName = window.sessionStorage.getItem("username") || "";
+    // 搜索单个管理员用户
+    searchAdminUsers () {
+      searchAdminUser(this.searchAdminUser).then(d => {
+        if (d.status.code === '200') {
+          this.tableData = []
+          this.tableData.push(d.admin)
+        } else {
+          this.$message.error('查询失败！用户名不存在')
+        }
+      })
+    },
 
-      this.loginUserPower = window.sessionStorage.getItem("power");
+    // 搜索输入框没值的时候显示所有
+    searchAdminUserInput () {
+      if (this.searchAdminUser === '') {
+        this.getSuperUsersData()
+      }
+    },
+
+    // 更改当前页
+    handleCurrentChange (val) {
+      this.AdminUsersParams.pageNum = val
+      this.getSuperUsersData()
+    },
+    // 更改每页条数
+    handleSizeChange (val) {
+      this.AdminUsersParams.pageSize = val
+      this.getSuperUsersData()
+    },
+
+    inputDis (d) {
+      const a = this.loginUserName !== d
+      const b = !(this.loginUserPower >= 5)
+      if (a === false || b === false) {
+        return false
+      }
+      if (a === true || b === false) {
+        return true
+      }
     }
+  },
 
-  };
+  created () {
+    this.getSuperUsersData()
+    // 获取sessionstorage的username
+    this.loginUserName = window.sessionStorage.getItem('username') || ''
+
+    this.loginUserPower = window.sessionStorage.getItem('power')
+  }
+
+}
 </script>
 
 <style scoped lang="less">

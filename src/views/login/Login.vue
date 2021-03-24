@@ -28,67 +28,67 @@
 </template>
 
 <script>
-  import { adminlogin, getIdenCode } from "network/login";
+import { adminlogin, getIdenCode } from 'network/login'
 
-  export default {
-    name: "Login",
-    data() {
-      return {
-        loginForm: {
-          userName: "",
-          passWord: "",
-          idenCode: ""
-        },
-        idenCodeData: {
-          idenCodeValue: "",
-          idenCodeImg: ""
-        }
-      };
-    },
-    methods: {
-      //登录点击
-      loginSubmit() {
-        if (!(this.loginForm.idenCode.toLowerCase() !== this.idenCodeData.idenCodeValue) || (this.loginForm.idenCode.toUpperCase() !== this.idenCodeData.idenCodeValue)) {
-          this.getCode();
-          return this.$message({
-            type: "error",
-            message: "请重新输入验证码！"
-          });
-        }
-        adminlogin({ userName: this.loginForm.userName, passWord: this.loginForm.passWord })
-          .then(d => {
-             if(d.status.code === "200"){
-                window.sessionStorage.setItem('token',d.token)
-                window.sessionStorage.setItem('username',this.loginForm.userName)
-                window.sessionStorage.setItem('power',d.power)
-                this.$message({
-                 type: "success",
-                 message: "登录成功！"
-               });
-                this.$router.push('/home')
-             }else{
-               this.$message({
-                 type: "error",
-                 message: "用户名或密码错误！"
-               });
-               this.getCode()
-             }
-          });
+export default {
+  name: 'Login',
+  data () {
+    return {
+      loginForm: {
+        userName: '',
+        passWord: '',
+        idenCode: ''
       },
-      //获取验证码
-      getCode() {
-        getIdenCode().then(d => {
-          if (d.status.code === "200") {
-            this.idenCodeData.idenCodeValue = d.value;
-            this.idenCodeData.idenCodeImg = d.url;
-          }
-        });
-      },
-    },
-    created() {
-      this.getCode();
+      idenCodeData: {
+        idenCodeValue: '',
+        idenCodeImg: ''
+      }
     }
-  };
+  },
+  methods: {
+    // 登录点击
+    loginSubmit () {
+      if (!(this.loginForm.idenCode.toLowerCase() !== this.idenCodeData.idenCodeValue) || (this.loginForm.idenCode.toUpperCase() !== this.idenCodeData.idenCodeValue)) {
+        this.getCode()
+        return this.$message({
+          type: 'error',
+          message: '请重新输入验证码！'
+        })
+      }
+      adminlogin({ userName: this.loginForm.userName, passWord: this.loginForm.passWord })
+        .then(d => {
+          if (d.status.code === '200') {
+            window.sessionStorage.setItem('token', d.token)
+            window.sessionStorage.setItem('username', this.loginForm.userName)
+            window.sessionStorage.setItem('power', d.power)
+            this.$message({
+              type: 'success',
+              message: '登录成功！'
+            })
+            this.$router.push('/home')
+          } else {
+            this.$message({
+              type: 'error',
+              message: '用户名或密码错误！'
+            })
+            this.getCode()
+          }
+        })
+    },
+    // 获取验证码
+    getCode () {
+      getIdenCode().then(d => {
+        if (d.status.code === '200') {
+          this.idenCodeData.idenCodeValue = d.value
+          this.idenCodeData.idenCodeImg = d.url
+        }
+      })
+    }
+  },
+  created () {
+    this.getCode()
+  }
+}
 </script>
 
 <style scoped lang="less">

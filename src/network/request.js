@@ -4,20 +4,20 @@
  * @Last Modified by:   Lancer
  * @Last Modified time: 2019/12/12
  */
-import  axios from 'axios'
-export function request(config) {
-  const instance  = axios.create({
-     baseURL:'http://39.101.186.75'
+import axios from 'axios'
+export function request (config) {
+  const instance = axios.create({
+    baseURL: process.env.VUE_APP_BASE_URL
   })
-  instance.interceptors.request.use(config=>{
+  instance.interceptors.request.use(config => {
     return config
-  },err=>{
+  }, err => {
     return Promise.reject(err)
   })
 
-  instance.interceptors.response.use(res=>{
+  instance.interceptors.response.use(res => {
     return res.data
-  },err=>{
+  }, err => {
     return Promise.reject(err)
   })
   return instance(config)

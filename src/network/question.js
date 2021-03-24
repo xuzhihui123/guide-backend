@@ -5,13 +5,12 @@
  * @Last Modified time: 2020/4/8
  */
 
-import { request } from "network/request";
+import { request } from 'network/request'
 
-
-//获取所有问题
-export function getAllQuestion() {
+// 获取所有问题
+export function getAllQuestion () {
   return request({
-    method:'get',
-    url:'/getQuestionDTOs'
+    method: 'get',
+    url: '/getQuestionDTOs'
   })
 }

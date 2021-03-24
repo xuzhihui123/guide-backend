@@ -6,17 +6,19 @@
  */
 
 module.exports = {
+  lintOnSave: true,
   configureWebpack: {
     resolve: {
       alias: {
-        "assets": "@/assets",
-        "commonjs": "@/commonjs",
-        "components": "@/components",
-        "common":"components/common",
-        "content":"components/content",
-        "network": "@/network",
-        "views": "@/views"
+        assets: '@/assets',
+        commonjs: '@/commonjs',
+        components: '@/components',
+        common: 'components/common',
+        content: 'components/content',
+        network: '@/network',
+        views: '@/views'
       }
     }
-  }
+  },
+  publicPath: '/houtai'
 }

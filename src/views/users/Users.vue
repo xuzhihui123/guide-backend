@@ -174,7 +174,6 @@
       </div>
     </el-dialog>
 
-
     <div class="bg-wrapper" v-show="avatorWrapperShow" @click="closeCropper">
 
     </div>
@@ -205,358 +204,354 @@
 </template>
 
 <script>
-  // 导入network
-  import {
-    getAllUserList,
-    deleteSingleUserById,
-    getSingleUserById,
-    updateSingleUserById,
-    submitAvator,
-    getRuleUsers,
-    searchUserByName
-  } from "network/users";
-  //导入工具类
-  import { fileToBase, dataURLtoFile } from "commonjs/fileToBase64";
+// 导入network
+import {
+  getAllUserList,
+  deleteSingleUserById,
+  getSingleUserById,
+  updateSingleUserById,
+  submitAvator,
+  getRuleUsers,
+  searchUserByName
+} from 'network/users'
+// 导入工具类
+import { fileToBase, dataURLtoFile } from 'commonjs/fileToBase64'
 
-  import { VueCropper } from "vue-cropper";
+import { VueCropper } from 'vue-cropper'
 
-  export default {
-    name: "Users",
-    data() {
-      let validatorPassWord = (rule, value, callback) => {
-        if (!/^(?![0-9]+$)[0-9A-Za-z]{6,14}$/.test(value)) {
-          callback(new Error("密码必须包含字母,请按规定输入"));
-        } else {
-          callback();
-        }
-      };
-      let validatePassWordAgain = (rule, value, callback) => {
-        if (value !== this.singleUserInfoDataForm.user_password) {
-          callback(new Error("两次输入密码不一致，请重新输入！"));
-        } else {
-          callback();
-        }
-      };
-      let validateCardTwo = (rule, value, callback) => {
-        if (value === "") {
-          callback();
-        } else {
-          if (!/^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$|^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/.test(value)) {
-            return callback(new Error("请输入正确的身份证信息！"));
-          } else {
-            return callback();
-          }
-        }
-      };
-      let validatePhone = (rule, value, callback) => {
-        if (!/^[1][3,4,5,7,8][0-9]{9}$/.test(value)) {
-          callback(new Error("请输入正确的电话号码!"));
-        } else {
-          callback();
-        }
-      };
-      return {
-        //用户表格数据,
-        userData: [],
-
-        //显示和隐藏用户编辑
-        changeUserInfoShow: false,
-
-        singleUserId: "",
-
-        //裁剪框 显示和隐藏
-        avatorWrapperShow: false,
-        //单个用户编辑的信息
-        singleUserInfoDataForm: {
-          user_password: "",
-          user_passwordAgain: "",
-          user_nick: "",
-          user_card: "",
-          user_phone: "",
-          user_trueName: "",
-          user_sex: "",
-          user_power: "",
-          user_avatar: ""
-        },
-        //用户编辑信息表单校验规则
-        formRules: {
-          user_password: [
-            { trigger: "change", message: "请输入密码" },
-            { min: 6, max: 14, message: "用户名不得低于6位且不超过14位", trigger: "change" },
-            { validator: validatorPassWord, trigger: "change" }
-          ],
-          user_passwordAgain: [
-            { trigger: "change", message: "请输入确认密码" },
-            { validator: validatePassWordAgain, trigger: "blur" }
-          ],
-          user_card: [
-            { min: 18, max: 18, message: "请输入正确的身份证信息!", trigger: "change" },
-            { validator: validateCardTwo, trigger: "blur" }
-          ],
-          user_phone: [
-            { min: 11, max: 11, message: "电话号码为11位!", trigger: "change" },
-            { validator: validatePhone, trigger: "blur" }
-          ]
-        },
-
-        option: {
-          img: "",
-          outputSize: 1,//裁剪生成图片的质量 0.1-1
-          full: false,//是否输出原图比例的截图
-          outputType: "png",//裁剪生成图片的格式
-          canMove: false,//上传图片是否可以移动
-          fixedBox: false,//固定截图框大小 不允许改变
-          original: false,//上传图片按照原始比例渲染
-          canMoveBox: true,//截图框能否拖动
-          autoCrop: true,//是否默认生成截图框
-          autoCropWidth: 200,
-          autoCropHeight: 200,
-          // 开启宽度和高度比例
-          fixed: true,
-          fixedNumber: [1, 1]
-        },
-
-        userId: "",
-        userName: "",
-        singleUser: "",
-        //分页的参数
-        userParams: {
-          pageNum: 1,
-          pageSize: 10
-        },
-        //总的数据条数
-        totalUserList: 0
-      };
-    },
-    methods: {
-      // 查找用户
-      async searchUsers() {
-        let d = await searchUserByName(this.singleUser);
-        if(d.code==='500'){
-          this.$message({
-            type:'error',
-            message:'没有该用户！'
-          })
-        }else{
-          let {data} = d;
-          this.userData = data;
-        }
-      },
-      //编辑用户
-      async editUser(userId) {
-        let d = await getSingleUserById({ userId });
-        let { data } = d;
-        for (let key in this.singleUserInfoDataForm) {
-          this.singleUserInfoDataForm[key] = data[key];
-        }
-        this.singleUserInfoDataForm["user_passwordAgain"] = data["user_password"];
-        this.changeUserInfoShow = true;
-        this.userId = userId;
-        this.userName = data.user_name;
-      },
-      //删除用户
-      deleteUser(userId) {
-        this.$confirm("确定要删除该用户吗?", "提示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(async () => {
-          let d = await deleteSingleUserById({ userId });
-          if (d.code === "200") {
-            this.$message({
-              message: "删除成功~",
-              type: "success"
-            });
-            //重新获取数据
-            this.getAllUserList();
-          } else {
-            this.$message({
-              message: "服务器错误！删除失败了！",
-              center: true,
-              type: "error"
-            });
-          }
-        }).catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除"
-          });
-        });
-      },
-
-      //获取所有用户信息列表
-      async getAllUserList() {
-        let d = await getAllUserList();
-        if (d.status.code === "200") {
-          this.totalUserList = d.data.length;
-          getRuleUsers(this.userParams.pageNum, this.userParams.pageSize).then(r => {
-            this.userData = r.data;
-          });
-        }
-      },
-
-
-      //更改头像
-      changeAvatar() {
-        let file = this.$refs.files.files[0];
-        if (!/^image\/(jpg|jpeg|png|bmp|BMP|JPG|PNG|JPEG)$/.test(file.type)) {
-          return this.$message({
-            type: "error",
-            message: "您上传的不是图片哦~"
-          });
-        } else {
-          fileToBase(file).then(r => {
-            this.option.img = r;
-            this.changeUserInfoShow = false;
-            this.avatorWrapperShow = true;
-          });
-        }
-      },
-
-
-      closeCropper() {
-        this.$confirm("确定不保存头像吗?", "提示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(() => {
-          this.option.img = "";
-          this.changeUserInfoShow = true;
-          this.avatorWrapperShow = false;
-          this.$refs.files.value = "";
-        }).catch(() => {
-
-        });
-      },
-
-      //完成裁剪
-      finish() {
-        this.$refs.cropper.getCropData((data) => {
-          //暂时保存到  不急着上传
-          this.singleUserInfoDataForm.user_avatar = data;
-          this.option.img = "";
-          this.changeUserInfoShow = true;
-          this.avatorWrapperShow = false;
-          this.$refs.files.value = "";
-        });
-      },
-
-      //关闭编辑页面前的函数
-      closeUserInfo() {
-        this.$confirm("确定不保存信息吗?", "提示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(() => {
-          this.changeUserInfoShow = false;
-        }).catch(() => {
-
-        });
-      },
-
-      //保存编辑单个用户信息
-      savaEditUser() {
-        let data = {};
-        data.user_id = this.userId;
-        data.user_vip = 0;
-        data.user_lv = 1;
-        data.user_name = this.userName;
-        for (let key in this.singleUserInfoDataForm) {
-          data[key] = this.singleUserInfoDataForm[key];
-        }
-        delete data["user_passwordAgain"];
-
-
-        //上传数据
-
-        this.ruleFormRef.validate((v)=>{
-          if(v){
-            // 判断头像是否为未更改前的数据  如果是未更改前的数据 直接上传
-            if (data.user_avatar.indexOf("http") === 0) {
-              updateSingleUserById(data).then(r => {
-                if (r.code === "200") {
-                  this.$message({
-                    type: "success",
-                    message: "修改成功！"
-                  });
-                  this.changeUserInfoShow = false;
-                  //重新获取数据
-                  this.getAllUserList();
-                } else {
-                  this.$message({
-                    type: "error",
-                    message: "修改失败！"
-                  });
-                }
-              });
-            } else {
-              //把base64转换为  file对象
-              let file = dataURLtoFile(data.user_avatar, "avator");
-              //上传file返回 头像链接
-              let f = new FormData();
-              f.append("file", file);
-              submitAvator(f).then(r => {
-                data.user_avatar = r;
-                updateSingleUserById(data).then(r => {
-                  if (r.code === "200") {
-                    this.$message({
-                      type: "success",
-                      message: "修改成功！"
-                    });
-                    this.changeUserInfoShow = false;
-                    //重新获取数据
-                    this.getAllUserList();
-                  } else {
-                    this.$message({
-                      type: "error",
-                      message: "修改失败！"
-                    });
-                  }
-                });
-              });
-            }
-          }else{
-            this.$message({
-              type: "error",
-              message: "请重新检查信息是否正确！"
-            });
-          }
-        })
-      },
-
-
-      //
-      handleCurrentChange(val) {
-        this.userParams.pageNum = val;
-        this.getAllUserList();
-      },
-
-      handleSizeChange(val) {
-        this.userParams.pageSize = val;
-        this.getAllUserList();
+export default {
+  name: 'Users',
+  data () {
+    const validatorPassWord = (rule, value, callback) => {
+      if (!/^(?![0-9]+$)[0-9A-Za-z]{6,14}$/.test(value)) {
+        callback(new Error('密码必须包含字母,请按规定输入'))
+      } else {
+        callback()
       }
-
-    },
-    created() {
-      this.getAllUserList();
-    },
-    computed: {
-      ruleFormRef() {
-        return this.$refs.ruleForm;
+    }
+    const validatePassWordAgain = (rule, value, callback) => {
+      if (value !== this.singleUserInfoDataForm.user_password) {
+        callback(new Error('两次输入密码不一致，请重新输入！'))
+      } else {
+        callback()
       }
-    },
-    components: {
-      VueCropper
-    },
-    watch: {
-      singleUser(newValue){
-        if(!newValue){
-          this.getAllUserList();
+    }
+    const validateCardTwo = (rule, value, callback) => {
+      if (value === '') {
+        callback()
+      } else {
+        if (!/^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$|^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/.test(value)) {
+          return callback(new Error('请输入正确的身份证信息！'))
+        } else {
+          return callback()
         }
       }
     }
+    const validatePhone = (rule, value, callback) => {
+      if (!/^[1][3,4,5,7,8][0-9]{9}$/.test(value)) {
+        callback(new Error('请输入正确的电话号码!'))
+      } else {
+        callback()
+      }
+    }
+    return {
+      // 用户表格数据,
+      userData: [],
 
-  };
+      // 显示和隐藏用户编辑
+      changeUserInfoShow: false,
+
+      singleUserId: '',
+
+      // 裁剪框 显示和隐藏
+      avatorWrapperShow: false,
+      // 单个用户编辑的信息
+      singleUserInfoDataForm: {
+        user_password: '',
+        user_passwordAgain: '',
+        user_nick: '',
+        user_card: '',
+        user_phone: '',
+        user_trueName: '',
+        user_sex: '',
+        user_power: '',
+        user_avatar: ''
+      },
+      // 用户编辑信息表单校验规则
+      formRules: {
+        user_password: [
+          { trigger: 'change', message: '请输入密码' },
+          { min: 6, max: 14, message: '用户名不得低于6位且不超过14位', trigger: 'change' },
+          { validator: validatorPassWord, trigger: 'change' }
+        ],
+        user_passwordAgain: [
+          { trigger: 'change', message: '请输入确认密码' },
+          { validator: validatePassWordAgain, trigger: 'blur' }
+        ],
+        user_card: [
+          { min: 18, max: 18, message: '请输入正确的身份证信息!', trigger: 'change' },
+          { validator: validateCardTwo, trigger: 'blur' }
+        ],
+        user_phone: [
+          { min: 11, max: 11, message: '电话号码为11位!', trigger: 'change' },
+          { validator: validatePhone, trigger: 'blur' }
+        ]
+      },
+
+      option: {
+        img: '',
+        outputSize: 1, // 裁剪生成图片的质量 0.1-1
+        full: false, // 是否输出原图比例的截图
+        outputType: 'png', // 裁剪生成图片的格式
+        canMove: false, // 上传图片是否可以移动
+        fixedBox: false, // 固定截图框大小 不允许改变
+        original: false, // 上传图片按照原始比例渲染
+        canMoveBox: true, // 截图框能否拖动
+        autoCrop: true, // 是否默认生成截图框
+        autoCropWidth: 200,
+        autoCropHeight: 200,
+        // 开启宽度和高度比例
+        fixed: true,
+        fixedNumber: [1, 1]
+      },
+
+      userId: '',
+      userName: '',
+      singleUser: '',
+      // 分页的参数
+      userParams: {
+        pageNum: 1,
+        pageSize: 10
+      },
+      // 总的数据条数
+      totalUserList: 0
+    }
+  },
+  methods: {
+    // 查找用户
+    async searchUsers () {
+      const d = await searchUserByName(this.singleUser)
+      if (d.code === '500') {
+        this.$message({
+          type: 'error',
+          message: '没有该用户！'
+        })
+      } else {
+        const { data } = d
+        this.userData = data
+      }
+    },
+    // 编辑用户
+    async editUser (userId) {
+      const d = await getSingleUserById({ userId })
+      const { data } = d
+      for (const key in this.singleUserInfoDataForm) {
+        this.singleUserInfoDataForm[key] = data[key]
+      }
+      this.singleUserInfoDataForm.user_passwordAgain = data.user_password
+      this.changeUserInfoShow = true
+      this.userId = userId
+      this.userName = data.user_name
+    },
+    // 删除用户
+    deleteUser (userId) {
+      this.$confirm('确定要删除该用户吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        const d = await deleteSingleUserById({ userId })
+        if (d.code === '200') {
+          this.$message({
+            message: '删除成功~',
+            type: 'success'
+          })
+          // 重新获取数据
+          this.getAllUserList()
+        } else {
+          this.$message({
+            message: '服务器错误！删除失败了！',
+            center: true,
+            type: 'error'
+          })
+        }
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
+
+    // 获取所有用户信息列表
+    async getAllUserList () {
+      const d = await getAllUserList()
+      if (d.status.code === '200') {
+        this.totalUserList = d.data.length
+        getRuleUsers(this.userParams.pageNum, this.userParams.pageSize).then(r => {
+          this.userData = r.data
+        })
+      }
+    },
+
+    // 更改头像
+    changeAvatar () {
+      const file = this.$refs.files.files[0]
+      if (!/^image\/(jpg|jpeg|png|bmp|BMP|JPG|PNG|JPEG)$/.test(file.type)) {
+        return this.$message({
+          type: 'error',
+          message: '您上传的不是图片哦~'
+        })
+      } else {
+        fileToBase(file).then(r => {
+          this.option.img = r
+          this.changeUserInfoShow = false
+          this.avatorWrapperShow = true
+        })
+      }
+    },
+
+    closeCropper () {
+      this.$confirm('确定不保存头像吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.option.img = ''
+        this.changeUserInfoShow = true
+        this.avatorWrapperShow = false
+        this.$refs.files.value = ''
+      }).catch(() => {
+
+      })
+    },
+
+    // 完成裁剪
+    finish () {
+      this.$refs.cropper.getCropData((data) => {
+        // 暂时保存到  不急着上传
+        this.singleUserInfoDataForm.user_avatar = data
+        this.option.img = ''
+        this.changeUserInfoShow = true
+        this.avatorWrapperShow = false
+        this.$refs.files.value = ''
+      })
+    },
+
+    // 关闭编辑页面前的函数
+    closeUserInfo () {
+      this.$confirm('确定不保存信息吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.changeUserInfoShow = false
+      }).catch(() => {
+
+      })
+    },
+
+    // 保存编辑单个用户信息
+    savaEditUser () {
+      const data = {}
+      data.user_id = this.userId
+      data.user_vip = 0
+      data.user_lv = 1
+      data.user_name = this.userName
+      for (const key in this.singleUserInfoDataForm) {
+        data[key] = this.singleUserInfoDataForm[key]
+      }
+      delete data.user_passwordAgain
+
+      // 上传数据
+
+      this.ruleFormRef.validate((v) => {
+        if (v) {
+          // 判断头像是否为未更改前的数据  如果是未更改前的数据 直接上传
+          if (data.user_avatar.indexOf('http') === 0) {
+            updateSingleUserById(data).then(r => {
+              if (r.code === '200') {
+                this.$message({
+                  type: 'success',
+                  message: '修改成功！'
+                })
+                this.changeUserInfoShow = false
+                // 重新获取数据
+                this.getAllUserList()
+              } else {
+                this.$message({
+                  type: 'error',
+                  message: '修改失败！'
+                })
+              }
+            })
+          } else {
+            // 把base64转换为  file对象
+            const file = dataURLtoFile(data.user_avatar, 'avator')
+            // 上传file返回 头像链接
+            const f = new FormData()
+            f.append('file', file)
+            submitAvator(f).then(r => {
+              data.user_avatar = r
+              updateSingleUserById(data).then(r => {
+                if (r.code === '200') {
+                  this.$message({
+                    type: 'success',
+                    message: '修改成功！'
+                  })
+                  this.changeUserInfoShow = false
+                  // 重新获取数据
+                  this.getAllUserList()
+                } else {
+                  this.$message({
+                    type: 'error',
+                    message: '修改失败！'
+                  })
+                }
+              })
+            })
+          }
+        } else {
+          this.$message({
+            type: 'error',
+            message: '请重新检查信息是否正确！'
+          })
+        }
+      })
+    },
+
+    //
+    handleCurrentChange (val) {
+      this.userParams.pageNum = val
+      this.getAllUserList()
+    },
+
+    handleSizeChange (val) {
+      this.userParams.pageSize = val
+      this.getAllUserList()
+    }
+
+  },
+  created () {
+    this.getAllUserList()
+  },
+  computed: {
+    ruleFormRef () {
+      return this.$refs.ruleForm
+    }
+  },
+  components: {
+    VueCropper
+  },
+  watch: {
+    singleUser (newValue) {
+      if (!newValue) {
+        this.getAllUserList()
+      }
+    }
+  }
+
+}
 </script>
 
 <style scoped lang="less">

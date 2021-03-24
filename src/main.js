@@ -1,29 +1,28 @@
-import Vue from "vue";
-import App from "./App.vue";
-import router from "./router";
-import store from "./store";
+import Vue from 'vue'
+import App from './App.vue'
+import router from './router'
+import store from './store'
 
-import ElementUI from "element-ui";
-import "element-ui/lib/theme-chalk/index.css";
+import ElementUI from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
 
-Vue.use(ElementUI);
+import 'assets/css/common.css'
+import 'animate.css'
 
-Vue.config.productionTip = false;
+import moment from 'moment'
 
+Vue.use(ElementUI)
 
-import "assets/css/common.css";
-import "animate.css";
+Vue.config.productionTip = false
 
-import moment from "moment";
-
-//全局时间过滤器
-Vue.filter("dateFormat", function(str, date = "YYYY-MM-DD HH:mm:ss") {
-  let d = parseInt(str);
-  return moment(d).format(date);
-});
+// 全局时间过滤器
+Vue.filter('dateFormat', function (str, date = 'YYYY-MM-DD HH:mm:ss') {
+  const d = parseInt(str)
+  return moment(d).format(date)
+})
 
 new Vue({
   router,
   store,
   render: h => h(App)
-}).$mount("#app");
+}).$mount('#app')

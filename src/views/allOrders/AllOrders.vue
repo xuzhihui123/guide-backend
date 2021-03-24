@@ -117,116 +117,113 @@
 </template>
 
 <script>
-  //导入network
-  import { getAllAlreadyOrders, getOrderById, getOrdersPain } from "network/orders";
+// 导入network
+import { getAllAlreadyOrders, getOrderById, getOrdersPain } from 'network/orders'
 
-  export default {
-    name: "AllOrders",
-    data() {
-      return {
-        ordersData: [],
-        totalOrders: null,
-        orderParams: {
-          pageNum: 1,
-          pageSize: 10
-        },
-        loading: true,
-        OrderIdText: null
-      };
-    },
-    methods: {
-      //获取所有完成订单信息
-      async getAllOrders() {
-        try {
-          let data = await getOrdersPain(this.orderParams.pageNum, this.orderParams.pageSize);
-          this.ordersData = data.data;
-          this.ordersData.forEach(async (item, i) => {
-            let d = await getOrderById(item.orderid);
-            this.$set(this.ordersData[i], "orderUserInfo", d.data[2]);
-            this.$set(this.ordersData[i], "orderGuideInfo", d.data[1]);
-          });
-          this.loading = false;
-        } catch (error) {
-          this.$message({
-            showClose: true,
-            message: "服务器错误，获取信息失败",
-            type: "error"
-          });
-        }
+export default {
+  name: 'AllOrders',
+  data () {
+    return {
+      ordersData: [],
+      totalOrders: null,
+      orderParams: {
+        pageNum: 1,
+        pageSize: 10
       },
-
-      async getAllOrderCount() {
-        try {
-          let data = await getAllAlreadyOrders();
-          this.totalOrders = data.msg.length;
-        } catch (error) {
-          this.$message({
-            showClose: true,
-            message: "服务器错误，获取信息失败",
-            type: "error"
-          });
-        }
-      },
-
-
-      //更改表格颜色
-      tableRowClassName({ rowIndex }) {
-        if (rowIndex % 2 === 0) {
-          return "warning-row";
-        } else if (rowIndex % 1 === 1) {
-          return "success-row";
-        }
-      },
-
-
-      //更改条数
-      handleSizeChange(v) {
-        this.orderParams.pageSize = v;
-        this.getAllOrders();
-      },
-      handleCurrentChange(v) {
-        this.orderParams.pageNum = v;
-        this.getAllOrders();
-      },
-
-
-      //搜索
-      async searchOrders(orderId) {
-        try {
-          let d = await getOrderById(orderId);
-          console.log(d);
-          if (d.code === "200") {
-            let datas = [d.data[0]];
-            this.ordersData = datas;
-            this.$set(this.ordersData[0], "orderUserInfo", d.data[2]);
-            this.$set(this.ordersData[0], "orderGuideInfo", d.data[1]);
-          } else {
-            this.$message({
-              type: "error",
-              message: "暂无该订单信息！"
-            });
-          }
-        } catch (error) {
-          this.$message({
-            type: "error",
-            message: "服务器错误！"
-          });
-        }
+      loading: true,
+      OrderIdText: null
+    }
+  },
+  methods: {
+    // 获取所有完成订单信息
+    async getAllOrders () {
+      try {
+        const data = await getOrdersPain(this.orderParams.pageNum, this.orderParams.pageSize)
+        this.ordersData = data.data
+        this.ordersData.forEach(async (item, i) => {
+          const d = await getOrderById(item.orderid)
+          this.$set(this.ordersData[i], 'orderUserInfo', d.data[2])
+          this.$set(this.ordersData[i], 'orderGuideInfo', d.data[1])
+        })
+        this.loading = false
+      } catch (error) {
+        this.$message({
+          showClose: true,
+          message: '服务器错误，获取信息失败',
+          type: 'error'
+        })
       }
     },
-    components: {},
-    created() {
-      this.getAllOrderCount();
-      this.getAllOrders();
+
+    async getAllOrderCount () {
+      try {
+        const data = await getAllAlreadyOrders()
+        this.totalOrders = data.msg.length
+      } catch (error) {
+        this.$message({
+          showClose: true,
+          message: '服务器错误，获取信息失败',
+          type: 'error'
+        })
+      }
     },
-    watch:{
-      OrderIdText(newValue){
-        if(newValue===''){
-          this.getAllOrders();
+
+    // 更改表格颜色
+    tableRowClassName ({ rowIndex }) {
+      if (rowIndex % 2 === 0) {
+        return 'warning-row'
+      } else if (rowIndex % 1 === 1) {
+        return 'success-row'
+      }
+    },
+
+    // 更改条数
+    handleSizeChange (v) {
+      this.orderParams.pageSize = v
+      this.getAllOrders()
+    },
+    handleCurrentChange (v) {
+      this.orderParams.pageNum = v
+      this.getAllOrders()
+    },
+
+    // 搜索
+    async searchOrders (orderId) {
+      try {
+        const d = await getOrderById(orderId)
+        console.log(d)
+        if (d.code === '200') {
+          const datas = [d.data[0]]
+          this.ordersData = datas
+          this.$set(this.ordersData[0], 'orderUserInfo', d.data[2])
+          this.$set(this.ordersData[0], 'orderGuideInfo', d.data[1])
+        } else {
+          this.$message({
+            type: 'error',
+            message: '暂无该订单信息！'
+          })
         }
+      } catch (error) {
+        this.$message({
+          type: 'error',
+          message: '服务器错误！'
+        })
       }
     }
-  };
+  },
+  components: {},
+  created () {
+    this.getAllOrderCount()
+    this.getAllOrders()
+  },
+  watch: {
+    OrderIdText (newValue) {
+      if (newValue === '') {
+        this.getAllOrders()
+      }
+    }
+  }
+}
 </script>
 
 <style scoped lang="less">
@@ -251,6 +248,5 @@
   .el-table .success-row {
     background: #f0f9eb;
   }
-
 
 </style>
