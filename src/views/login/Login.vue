@@ -1,7 +1,7 @@
 <template>
   <div class="login" style="min-width: 1200px">
     <div class="login-title">
-      寻导后台管理系统
+      后台管理系统
     </div>
     <div class="login-inner">
       <el-form :model="loginForm" status-icon ref="ruleForm" label-width="0px" class="demo-ruleForm"
@@ -14,11 +14,11 @@
           <el-input v-model="loginForm.passWord" autocomplete="off" clearable="" prefix-icon="el-icon-lock"
                     placeholder="请输入密码"></el-input>
         </el-form-item>
-        <el-form-item prop="idenCode">
+        <!-- <el-form-item prop="idenCode">
           <el-input v-model="loginForm.idenCode" autocomplete="off" clearable="" prefix-icon="el-icon-edit-outline"
                     placeholder="请输入验证码"></el-input>
           <img :src="this.idenCodeData.idenCodeImg" alt="" class="idenCode-inner_img" @click="getCode">
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label-width="0">
           <div class="submit" @click="loginSubmit">登&nbsp;录</div>
         </el-form-item>

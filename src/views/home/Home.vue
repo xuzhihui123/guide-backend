@@ -2,10 +2,10 @@
   <el-container>
     <el-header>
       <div style="color: #fff;" class="left_logo">
-          寻导-后台管理
+          后台管理
       </div>
       <div class="top_user">
-        <img src="~assets/main-logo.png" alt="">
+        <!-- <img src="~assets/main-logo.png" alt=""> -->
         <el-dropdown @command="signOut" style="cursor: pointer">
         <span class="el-dropdown-link" style="color: #fff;">
           您好：{{loginUserName}}<i class="el-icon-arrow-down el-icon--right"></i>
@@ -27,9 +27,9 @@
                      unique-opened
                      default-active="/home/superusers"
                      :collapse-transition="false"
-                     background-color="#313743"
+                     background-color="#4e6ef2"
                      text-color="#fff"
-                     active-text-color="#359BFF">
+                     active-text-color="#eee">
 
               <!--              一级菜单-->
               <el-submenu :index="item.index" v-for="item in asideNavList" :key="item.index">
@@ -129,10 +129,18 @@ export default {
   }
 }
 </script>
-
+<style>
+.el-submenu__title i{
+  color:#fff;
+}
+.el-menu-item i{
+  color:#fff
+}
+</style>
 <style scoped lang="less">
+
   .el-header, .el-aside {
-    background-color: #313743;
+    background-color: #4e6ef2;
   }
 
   .el-header {
@@ -186,3 +194,4 @@ export default {
   }
 
 </style>
+

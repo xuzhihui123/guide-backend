@@ -1,8 +1,5 @@
 <template>
   <div class="all-data" ref="wrap">
-    <div ref="wrapInner" class="zhuzhuang">
-
-    </div>
     <div ref="wrapInnerZx" class="zhexian">
 
     </div>
@@ -233,31 +230,6 @@ export default {
           formatter: '<span style="color: #fff">数据统计</span> <br/>{a0}: {c0}条<br />{a1}: {c1}条'
         },
         series: [{
-          type: 'bar',
-          name: '柱状图',
-          data: [30, 32, 21, 21, 1, 30, 32, 21, 21, 1, 25, 152],
-          itemStyle: {
-            normal: {
-              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                offset: 0,
-                color: '#FF9A22' // 0% 处的颜色
-              }, {
-                offset: 1,
-                color: '#FFD56E' // 100% 处的颜色
-              }], false),
-              barBorderRadius: [30, 30, 0, 0]
-            }
-          },
-          label: {
-            normal: {
-              show: true,
-              fontSize: 18,
-              fontWeight: 'bold',
-              color: '#333',
-              position: 'top'
-            }
-          }
-        }, {
           data: [30, 32, 21, 21, 1, 30, 32, 21, 21, 1, 25, 152],
           type: 'line',
           smooth: true,
@@ -277,8 +249,6 @@ export default {
   },
   mounted () {
     this.$nextTick(() => {
-      this.dataEcharts = echarts.init(this.$refs.wrapInner)
-      this.getAllOrdersArray()
 
       this.dataEchartsTwo = echarts.init(this.$refs.wrapInnerZx)
       this.getAllQues()
@@ -331,7 +301,6 @@ export default {
         }
       })
       this.dataTwo.series[0].data = this.dataTwoData
-      this.dataTwo.series[1].data = this.dataTwoData
       this.dataEchartsTwo.setOption(this.dataTwo)
     },
 
@@ -400,10 +369,6 @@ export default {
     flex-direction: row;
     justify-content: space-between;
 
-    .zhuzhuang {
-      flex: 1;
-      height: 500px;
-    }
 
     .zhexian {
       flex: 1;
