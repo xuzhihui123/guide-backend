@@ -28,6 +28,6 @@ export function adminlogin (data) {
 export function getIdenCode () {
   return request({
     method: 'get',
-    url: '/getCode'
+    url: '/code'
   })
 }

@@ -48,13 +48,13 @@ export default {
   methods: {
     // 登录点击
     loginSubmit () {
-      if (!(this.loginForm.idenCode.toLowerCase() !== this.idenCodeData.idenCodeValue) || (this.loginForm.idenCode.toUpperCase() !== this.idenCodeData.idenCodeValue)) {
-        this.getCode()
-        return this.$message({
-          type: 'error',
-          message: '请重新输入验证码！'
-        })
-      }
+      // if (!(this.loginForm.idenCode.toLowerCase() !== this.idenCodeData.idenCodeValue) || (this.loginForm.idenCode.toUpperCase() !== this.idenCodeData.idenCodeValue)) {
+      //   this.getCode()
+      //   return this.$message({
+      //     type: 'error',
+      //     message: '请重新输入验证码！'
+      //   })
+      // }
       adminlogin({ userName: this.loginForm.userName, passWord: this.loginForm.passWord })
         .then(d => {
           if (d.status.code === '200') {

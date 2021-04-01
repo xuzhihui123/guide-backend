@@ -84,30 +84,6 @@ export default {
           index: '2'
         },
         {
-          title: '导游管理',
-          childeren: [{
-            title: '导游列表',
-            index: '/home/guides'
-          }],
-          index: '3'
-        },
-        // {
-        //   title: "留言管理",
-        //   childeren: [{
-        //     title: "留言信息列表",
-        //     index: "/home/messages"
-        //   }],
-        //   index: "4"
-        // },
-        {
-          title: '订单管理',
-          childeren: [{
-            title: '全部订单',
-            index: '/home/allorders'
-          }],
-          index: '4'
-        },
-        {
           title: '数据统计',
           childeren: [
             { title: '数据统计图', index: '/home/alldata' }
