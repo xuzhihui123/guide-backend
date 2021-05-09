@@ -108,6 +108,7 @@ export default {
         //   this.idenCodeData.idenCodeValue = d.value;
         //   this.idenCodeData.idenCodeImg = d.url;
         // }
+
         let url = URL.createObjectURL(d);
         this.idenCodeData.idenCodeImg = url;
       });
