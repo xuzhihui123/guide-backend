@@ -28,7 +28,7 @@
             placeholder="请输入密码"
           ></el-input>
         </el-form-item>
-        <el-form-item prop="idenCode">
+        <!-- <el-form-item prop="idenCode">
           <el-input
             v-model="loginForm.idenCode"
             autocomplete="off"
@@ -42,7 +42,7 @@
             class="idenCode-inner_img"
             @click="getCode"
           />
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label-width="0">
           <div class="submit" @click="loginSubmit">登&nbsp;录</div>
         </el-form-item>
@@ -52,26 +52,26 @@
 </template>
 
 <script>
-import { adminlogin, getIdenCode } from "network/login";
+import { adminlogin, getIdenCode } from 'network/login'
 
 export default {
-  name: "Login",
-  data() {
+  name: 'Login',
+  data () {
     return {
       loginForm: {
-        userName: "",
-        passWord: "",
-        idenCode: "",
+        userName: '',
+        passWord: '',
+        idenCode: ''
       },
       idenCodeData: {
-        idenCodeValue: "",
-        idenCodeImg: "",
-      },
-    };
+        idenCodeValue: '',
+        idenCodeImg: ''
+      }
+    }
   },
   methods: {
     // 登录点击
-    loginSubmit() {
+    loginSubmit () {
       // if (!(this.loginForm.idenCode.toLowerCase() !== this.idenCodeData.idenCodeValue) || (this.loginForm.idenCode.toUpperCase() !== this.idenCodeData.idenCodeValue)) {
       //   this.getCode()
       //   return this.$message({
@@ -81,43 +81,43 @@ export default {
       // }
       adminlogin({
         userName: this.loginForm.userName,
-        passWord: this.loginForm.passWord,
+        passWord: this.loginForm.passWord
       }).then((d) => {
-        if (d.status.code === "200") {
-          window.sessionStorage.setItem("token", d.token);
-          window.sessionStorage.setItem("username", this.loginForm.userName);
-          window.sessionStorage.setItem("power", d.power);
+        if (d.status.code === '200') {
+          window.sessionStorage.setItem('token', d.token)
+          window.sessionStorage.setItem('username', this.loginForm.userName)
+          window.sessionStorage.setItem('power', d.power)
           this.$message({
-            type: "success",
-            message: "登录成功！",
-          });
-          this.$router.push("/home");
+            type: 'success',
+            message: '登录成功！'
+          })
+          this.$router.push('/home')
         } else {
           this.$message({
-            type: "error",
-            message: "用户名或密码错误！",
-          });
+            type: 'error',
+            message: '用户名或密码错误！'
+          })
           // this.getCode();
         }
-      });
+      })
     },
     // 获取验证码
-    getCode() {
+    getCode () {
       getIdenCode().then((d) => {
         // if (d.status.code === "200") {
         //   this.idenCodeData.idenCodeValue = d.value;
         //   this.idenCodeData.idenCodeImg = d.url;
         // }
 
-        let url = URL.createObjectURL(d);
-        this.idenCodeData.idenCodeImg = url;
-      });
-    },
+        const url = URL.createObjectURL(d)
+        this.idenCodeData.idenCodeImg = url
+      })
+    }
   },
-  created() {
-    this.getCode();
-  },
-};
+  created () {
+    this.getCode()
+  }
+}
 </script>
 
 <style scoped lang="less">

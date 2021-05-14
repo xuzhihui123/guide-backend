@@ -76,7 +76,7 @@ export default {
           axisTick: {
             show: false
           },
-          data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月']
+          data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
         }],
         yAxis: [{
           type: 'value',
@@ -291,44 +291,8 @@ export default {
       data.forEach(item => {
         const dateTime = item.gmtCreate
         const d = parseInt(this.formatTime(dateTime))
-        switch (d) {
-          case 1:
-            this.dataTwoData[0] += 1
-            break
-          case 2:
-            this.dataTwoData[1] += 1
-            break
-          case 3:
-            this.dataTwoData[2] += 1
-            break
-          case 4:
-            this.dataTwoData[3] += 1
-            break
-          case 5:
-            this.dataTwoData[4] += 1
-            break
-          case 6:
-            this.dataTwoData[5] += 1
-            break
-          case 7:
-            this.dataTwoData[6] += 1
-            break
-          case 8:
-            this.dataTwoData[7] += 1
-            break
-          case 9:
-            this.dataTwoData[8] += 1
-            break
-          case 10:
-            this.dataTwoData[9] += 1
-            break
-          case 11:
-            this.dataTwoData[10] += 1
-            break
-          case 12:
-            this.dataTwoData[11] += 1
-            break
-        }
+        console.log(d)
+        this.dataTwoData[d - 1] += 1
       })
       this.dataTwo.series[0].data = this.dataTwoData
       this.dataTwo.series[1].data = this.dataTwoData
@@ -342,44 +306,7 @@ export default {
       data.forEach(item => {
         const ds = this.formatTime(parseInt(item.orderTime))
         const d = parseInt(ds)
-        switch (d) {
-          case 1:
-            this.dataOrdersData[0] += 1
-            break
-          case 2:
-            this.dataOrdersData[1] += 1
-            break
-          case 3:
-            this.dataOrdersData[2] += 1
-            break
-          case 4:
-            this.dataOrdersData[3] += 1
-            break
-          case 5:
-            this.dataOrdersData[4] += 1
-            break
-          case 6:
-            this.dataOrdersData[5] += 1
-            break
-          case 7:
-            this.dataOrdersData[6] += 1
-            break
-          case 8:
-            this.dataOrdersData[7] += 1
-            break
-          case 9:
-            this.dataOrdersData[8] += 1
-            break
-          case 10:
-            this.dataOrdersData[9] += 1
-            break
-          case 11:
-            this.dataOrdersData[10] += 1
-            break
-          case 12:
-            this.dataOrdersData[11] += 1
-            break
-        }
+        this.dataOrdersData[d - 1] += 1
       })
       this.data.series[0].data = this.dataOrdersData
       this.dataEcharts.setOption(this.data)
