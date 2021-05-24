@@ -1,16 +1,11 @@
 <template>
   <div class="all-data" ref="wrap">
-    <div ref="wrapInner" class="zhuzhuang">
-
-    </div>
-    <div ref="wrapInnerZx" class="zhexian">
-
-    </div>
+      <vl-line width="100%" :settings="barSettings" :data="questionData" :options="questionOptions"></vl-line>
+      <vl-pie width="100%" :height="500" :settings="lineSettings" :data="orderData" :options="orderOptions"></vl-pie>
   </div>
 </template>
 
 <script>
-import echarts from 'echarts'
 import { getAllQuestion } from 'network/question'
 import { getAllAlreadyOrders } from 'network/orders'
 import moment from 'moment'
@@ -19,297 +14,143 @@ export default {
   name: 'AllData',
   data () {
     return {
-      dataEcharts: null,
-      dataEchartsTwo: null,
-      data: {
-        title: {
-          text: '日订单折线图',
-          textStyle: {
-            color: '#03a9f4',
-            fontWeight: 'bold'
-          },
-          left: '20%',
-          top: '5%'
-        },
-        backgroundColor: '#E9EDF1',
-        tooltip: {
-          show: true,
-          trigger: 'axis',
-          axisPointer: {
-            type: 'cross',
-            label: {
-              backgroundColor: '#6a7985'
-            }
-          }
-        },
-        grid: {
-          top: '15%',
-          left: '1%',
-          right: '1%',
-          bottom: '8%',
-          containLabel: true
-        },
-        legend: {
-          itemGap: 50,
-          data: ['订单总量'],
-          textStyle: {
-            color: '#03a9f4',
-            borderColor: '#fff'
-          },
-          top: '5%'
-        },
-        xAxis: [{
-          type: 'category',
-          boundaryGap: true,
-          axisLine: { // 坐标轴轴线相关设置。数学上的x轴
-            show: true,
-            lineStyle: {
-              color: '#03a9f4'
-            }
-          },
-          axisLabel: { // 坐标轴刻度标签的相关设置
-            textStyle: {
-              color: '#03a9f4',
-              margin: 15
-            }
-          },
-          axisTick: {
-            show: false
-          },
-          data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
-        }],
-        yAxis: [{
-          type: 'value',
-          min: 0,
-          // max: 140,
-          splitNumber: 7,
-          splitLine: {
-            show: true,
-            lineStyle: {
-              color: '#ccc'
-            }
-          },
-          axisLine: {
-            show: false
-          },
-          axisLabel: {
-            margin: 20,
-            textStyle: {
-              color: '#03a9f4'
-            }
-          },
-          axisTick: {
-            show: false
-          }
-        }],
-        series: [{
-          name: '订单总量',
-          type: 'line',
-          // smooth: true, //是否平滑曲线显示
-          // symbol:'circle',  // 默认是空心圆（中间是白色的），改成实心圆
-          showAllSymbol: true,
-          symbol: 'emptyCircle',
-          symbolSize: 10,
-          smooth: true,
-          lineStyle: {
-            normal: {
-              color: '#03a9f4' // 线条颜色
-            }
-          },
-          label: {
-            show: true,
-            position: 'top',
-            textStyle: {
-              color: '#03a9f4'
-            },
-            fontSize: 14
-          },
-          itemStyle: {
-            borderColor: '#03a9f4'
-          },
-          tooltip: {
-            show: true
-          },
-          areaStyle: { // 区域填充样式
-            normal: {
-              // 线性渐变，前4个参数分别是x0,y0,x2,y2(范围0~1);相当于图形包围盒中的百分比。如果最后一个参数是‘true’，则该四个值是绝对像素位置。
-              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                offset: 0,
-                color: 'rgba(3,169,244,1)'
-              },
-              {
-                offset: 1,
-                color: 'rgba(0,0,0, 0)'
-              }
-              ], false),
-              shadowColor: 'rgba(53,142,215, 0.9)', // 阴影颜色
-              shadowBlur: 20 // shadowBlur设图形阴影的模糊大小。配合shadowColor,shadowOffsetX/Y, 设置图形的阴影效果。
-            }
-          },
-          data: [393, 438, 485, 631, 689, 824, 987]
-        }],
-        color: ['#03a9f4']
+      barSettings: {
+        tooltipVisible: true,
+        legendVisible: true
       },
-      dataOrdersData: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      dataTwoData: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      dataTwo: {
-        color: ['#3275FB'],
+      lineSettings: {
+        tooltipVisible: true,
+        legendVisible: true
+      },
+      questionData: {
+        columnList: [
+          { name: '问题数量' },
+          { name: '2021' }
+        ],
+        data: [
+
+        ]
+      },
+      questionOptions: {
         title: {
-          text: '论坛问题数量汇总',
-          textStyle: {
-            color: '#444',
-            fontWeight: 'bold'
-          },
-          left: '35%',
-          top: '5%'
+          text: '论坛问题数量统计折线图'
         },
-        legend: {
-          itemGap: 10,
-          textStyle: {
-            color: '#03a9f4',
-            borderColor: '#fff'
-          },
-          top: '5%',
-          right: '15%'
+        xAxis: {
+          boundaryGap: false
         },
-        backgroundColor: '#E9EDF1',
-        grid: {
-          top: '15%',
-          right: '10%',
-          left: '10%',
-          bottom: '12%'
+        yAxis: {
+          boundaryGap: [0, '30%']
         },
-        xAxis: [{
-          type: 'category',
-          color: '#59588D',
-          data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
-          axisLabel: {
-            margin: 10,
-            color: '#999',
-            textStyle: {
-              fontSize: 18
-            },
-            interval: 0
-          },
-          axisLine: {
-            lineStyle: {
-              color: 'rgba(107,107,107,0.37)'
-            }
-          },
-          axisTick: {
-            show: true
-          }
-        }],
-        yAxis: [{
-          min: 0,
-          axisLabel: {
-            formatter: '{value}',
-            color: '#999',
-            textStyle: {
-              fontSize: 18
-            }
-          },
-          axisLine: {
-            lineStyle: {
-              color: 'rgba(107,107,107,0.37)'
-            }
-          },
-          axisTick: {
-            show: false
-          },
-          splitLine: {
-            lineStyle: {
-              color: 'rgba(131,101,101,0.2)',
-              type: 'dashed'
-            }
-          }
-        }],
-        tooltip: {
-          show: true,
-          trigger: 'axis',
-          axisPointer: {
-            type: 'cross'
-          },
-          formatter: '<span style="color: #fff">数据统计</span> <br/>{a0}: {c0}条<br />{a1}: {c1}条'
+        visualMap: {
+          type: 'piecewise',
+          show: false,
+          dimension: 0,
+          seriesIndex: 0,
+          pieces: [{
+            gt: 1,
+            lt: 3,
+            color: 'rgba(0, 180, 0, 0.5)'
+          }, {
+            gt: 5,
+            lt: 7,
+            color: 'rgba(0, 180, 0, 0.5)'
+          }]
         },
-        series: [{
-          type: 'bar',
-          name: '柱状图',
-          data: [30, 32, 21, 21, 1, 30, 32, 21, 21, 1, 25, 152],
-          itemStyle: {
-            normal: {
-              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                offset: 0,
-                color: '#FF9A22' // 0% 处的颜色
-              }, {
-                offset: 1,
-                color: '#FFD56E' // 100% 处的颜色
-              }], false),
-              barBorderRadius: [30, 30, 0, 0]
-            }
-          },
-          label: {
-            normal: {
-              show: true,
-              fontSize: 18,
-              fontWeight: 'bold',
-              color: '#333',
-              position: 'top'
-            }
-          }
-        }, {
-          data: [30, 32, 21, 21, 1, 30, 32, 21, 21, 1, 25, 152],
+        series: {
           type: 'line',
-          smooth: true,
-          name: '折线图',
-          symbol: 'none',
+          smooth: 0.6,
+          // symbol: 'none',
           lineStyle: {
-            color: '#3275FB',
-            width: 4,
-            shadowColor: 'rgba(0, 0, 0, 0.3)', // 设置折线阴影
-            shadowBlur: 15,
-            shadowOffsetY: 20
+            color: '#83bff6',
+            width: 5
+          },
+          areaStyle: {}
+        }
+      },
+      orderOptions: {
+        legend: {
+          top: '25%',
+          left: '20%',
+          orient: 'vertical',
+          textStyle: {
+            color: '#F4606C'
+          }
+        },
+        title: {
+          text: '订单数量统计环形图'
+        },
+        grid: {
+          top: '30%'
+        },
+        series: {
+          radius: ['50%', '70%'],
+          avoidLabelOverlap: false,
+          label: {
+            show: false,
+            position: 'center'
+          },
+          emphasis: {
+            label: {
+              show: true,
+              fontSize: '30',
+              fontWeight: 'bold'
+            }
+          },
+          labelLine: {
+            show: false
           }
         }
+      },
+      orderData: {
+        columnList: [
+          { name: '订单数量' },
+          { name: '2021' }
+        ],
+        data: [
+
         ]
       }
     }
   },
-  mounted () {
-    this.$nextTick(() => {
-      this.dataEcharts = echarts.init(this.$refs.wrapInner)
-      this.getAllOrdersArray()
-
-      this.dataEchartsTwo = echarts.init(this.$refs.wrapInnerZx)
-      this.getAllQues()
-    })
+  async created () {
+    await this.getAllQues()
+    await this.getAllOrdersArray()
   },
   methods: {
-    // 获取所有问题  计算每个月的问题数量  保存在 dataTwoData
+    // 获取所有问题  计算每个月的问题数量
     async getAllQues () {
       const data = await getAllQuestion()
-      data.forEach(item => {
-        const dateTime = item.gmtCreate
-        const d = parseInt(this.formatTime(dateTime))
-        console.log(d)
-        this.dataTwoData[d - 1] += 1
-      })
-      this.dataTwo.series[0].data = this.dataTwoData
-      this.dataTwo.series[1].data = this.dataTwoData
-      this.dataEchartsTwo.setOption(this.dataTwo)
+      this.formatData(data, 'gmtCreate', this.questionData.data)
     },
 
-    // 获取所有订单 计算每个月的订单数量  保存在
-    async getAllOrdersArray () {
-      const d = await getAllAlreadyOrders()
-      const data = d.msg
-      data.forEach(item => {
-        const ds = this.formatTime(parseInt(item.orderTime))
-        const d = parseInt(ds)
-        this.dataOrdersData[d - 1] += 1
+    formatData (postData, timeStr, echartsData) {
+      const dataDict = {}
+      postData.forEach(item => {
+        item[timeStr] = this.formatTime(Number(item[timeStr]))
+        item[timeStr] = item[timeStr].startsWith('0') ? Number(item[timeStr].substring(1)) : Number(item[timeStr])
+        if (!dataDict[item[timeStr]]) {
+          dataDict[item[timeStr]] = 1
+        } else {
+          dataDict[item[timeStr]] = ++dataDict[item[timeStr]]
+        }
       })
-      this.data.series[0].data = this.dataOrdersData
-      this.dataEcharts.setOption(this.data)
+      for (let i = 1; i < 13; i++) {
+        echartsData.push([i + '月'])
+      }
+      Object.keys(dataDict) && Object.keys(dataDict).forEach(item => {
+        echartsData[item - 1].push(dataDict[item])
+      })
+      echartsData.forEach(item => {
+        if (item.length !== 2) {
+          item.push(0)
+        }
+      })
+    },
+
+    // 获取所有订单 计算每个月的订单数量
+    async getAllOrdersArray () {
+      const { msg } = await getAllAlreadyOrders()
+      this.formatData(msg, 'orderTime', this.orderData.data)
     },
 
     // 时间初始化
@@ -324,17 +165,6 @@ export default {
 <style scoped lang="less">
   .all-data {
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-
-    .zhuzhuang {
-      flex: 1;
-      height: 500px;
-    }
-
-    .zhexian {
-      flex: 1;
-      height: 500px;
-    }
+    flex-direction: column;
   }
 </style>
