@@ -5,11 +5,14 @@ import store from './store'
 
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
+import SsaComponentsNext from 'ssa-components-next'
 
 import 'assets/css/common.css'
 import 'animate.css'
 
 import moment from 'moment'
+
+Vue.use(SsaComponentsNext)
 
 Vue.use(ElementUI)
 
