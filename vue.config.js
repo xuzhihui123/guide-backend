@@ -20,5 +20,5 @@ module.exports = {
       }
     }
   },
-  publicPath: '/houtai'
+  publicPath: '/backend'
 }
