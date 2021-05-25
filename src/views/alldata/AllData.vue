@@ -33,36 +33,101 @@ export default {
       },
       questionOptions: {
         title: {
-          text: '论坛问题数量统计折线图'
+          text: '论坛问题数量统计折线图',
+          textStyle: {
+            fontFamily: 'monospace',
+            color: '#019688'
+          }
+        },
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            lineStyle: {
+              width: 2,
+              color: '#019688'
+            },
+            type: 'cross'
+          }
+        },
+        grid: {
+          left: '5%',
+          right: '3%',
+          bottom: '5%',
+          containLabel: true
         },
         xAxis: {
-          boundaryGap: false
+          boundaryGap: false,
+          // 刻度文字颜色
+          axisLabel: { color: '#808080' },
+          axisLine: {
+            lineStyle: {
+              width: 3,
+              color: '#019688'
+            }
+          },
+          splitLine: {
+            show: true,
+            lineStyle: {
+              width: 1,
+              type: 'solid',
+              color: 'rgba(226,226,226,0.5)'
+            }
+          },
+          axisTick: { // 轴刻度线
+            show: false
+          }
         },
         yAxis: {
-          boundaryGap: [0, '30%']
+          boundaryGap: [0, '30%'],
+          axisTick: { // 轴刻度线
+            show: false
+          },
+          // 刻度文字颜色
+          axisLabel: { color: '#808080' },
+          // y轴刻度设置
+          axisLine: {
+            lineStyle: {
+              width: 3,
+              color: '#019688'
+            }
+          },
+          // y轴分隔线设置
+          splitLine: {
+            lineStyle: {
+              color: 'rgba(226,226,226,0.5)'
+            }
+          },
+          // y轴分隔区域设置
+          splitArea: {
+            show: true,
+            areaStyle: {
+              color: ['rgba(250,250,250,0.3)', 'rgba(226,226,226,0.3)']
+            }
+          }
         },
-        visualMap: {
-          type: 'piecewise',
-          show: false,
-          dimension: 0,
-          seriesIndex: 0,
-          pieces: [{
-            gt: 1,
-            lt: 3,
-            color: 'rgba(0, 180, 0, 0.5)'
-          }, {
-            gt: 5,
-            lt: 7,
-            color: 'rgba(0, 180, 0, 0.5)'
-          }]
-        },
+        color: ['#019688', '#119AC2'],
+        // visualMap: {
+        //   type: 'piecewise',
+        //   show: false,
+        //   dimension: 0,
+        //   seriesIndex: 0,
+        //   pieces: [{
+        //     gt: 1,
+        //     lt: 3,
+        //     color: 'rgba(0, 180, 0, 0.5)'
+        //   }, {
+        //     gt: 5,
+        //     lt: 7,
+        //     color: 'rgba(0, 180, 0, 0.5)'
+        //   }]
+        // },
         series: {
           type: 'line',
           smooth: 0.6,
           // symbol: 'none',
           lineStyle: {
             color: '#83bff6',
-            width: 5
+            width: 3
           },
           areaStyle: {}
         }
@@ -77,7 +142,10 @@ export default {
           }
         },
         title: {
-          text: '订单数量统计环形图'
+          text: '订单数量统计环形图',
+          textStyle: {
+            color: '#019688'
+          }
         },
         grid: {
           top: '30%'
